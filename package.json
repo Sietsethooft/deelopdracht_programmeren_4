@@ -4,8 +4,7 @@
   "description": "Deelopdracht voor programmeren 4",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "test": "mocha test/user_create_test.js"
+    "start": "nodemon index.js"
   },
   "keywords": [
     "opdracht",
