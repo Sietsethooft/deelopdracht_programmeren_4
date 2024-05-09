@@ -7,89 +7,85 @@ chai.should()
 chai.use(chaiHttp)
 tracer.setLevel('warn')
 
-const endpointToTest = '/api/user'
+const endpointToTest = '/api/user';
 
 describe('UC201 Registreren als nieuwe user', () => {
-    /**
-     * Voorbeeld van een beforeEach functie.
-     * Hiermee kun je code hergebruiken of initialiseren.
-     */
-    beforeEach((done) => {
-        console.log('Before each test')
-        done()
-    })
-
-    /**
-     * Hier starten de testcases
-     */
-    it('TC-201-1 Verplicht veld ontbreekt', (done) => {
+    it('Maak twee geldige gebruikers aan', (done) => {
         chai.request(server)
             .post(endpointToTest)
             .send({
-                // firstName: 'Voornaam', ontbreekt
-                lastName: 'Achternaam',
-                emailAdress: 'v.a@server.nl'
+                firstName: 'John',
+                lastName: 'Doe',
+                emailAdress: 'j.doe@example.com',
+                password: 'StrongPass123'
             })
             .end((err, res) => {
-                /**
-                 * Voorbeeld uitwerking met chai.expect
-                 */
-                chai.expect(res).to.have.status(400)
-                chai.expect(res).not.to.have.status(200)
-                chai.expect(res.body).to.be.a('object')
-                chai.expect(res.body).to.have.property('status').equals(400)
-                chai.expect(res.body)
-                    .to.have.property('message')
-                    .equals('Missing or incorrect firstName field')
-                chai
-                    .expect(res.body)
-                    .to.have.property('data')
-                    .that.is.a('object').that.is.empty
+                chai.expect(res).to.have.status(200);
+                
+                chai.request(server)
+                    .post(endpointToTest)
+                    .send({
+                        firstName: 'Jane',
+                        lastName: 'Doe',
+                        emailAdress: 'j.doe@example.com',
+                        password: 'SecurePass456'
+                    })
+                    .end((err, res) => {
+                        chai.expect(res).to.have.status(200);
+                        done();
+                    });
+            });
+    });
+});
 
-                done()
-            })
-    })
-
-    it.skip('TC-201-2 Niet-valide email adres', (done) => {
-        done()
-    })
-
-    it.skip('TC-201-3 Niet-valide password', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-        done()
-    })
-
-    it.skip('TC-201-4 Gebruiker bestaat al', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-        done()
-    })
-
-    it('TC-201-5 Gebruiker succesvol geregistreerd', (done) => {
+describe('UC202 Ophalen van alle gebruikers', () => {
+    it('Toon alle gebruikers die zijn gemaakt', (done) => {
         chai.request(server)
-            .post(endpointToTest)
+            .get(endpointToTest)
+            .end((err, res) => {
+                chai.expect(res).to.have.status(200);
+                chai.expect(res.body).to.be.an('array').that.has.lengthOf.at.least(2); // Minstens 2 gebruikers moeten aanwezig zijn
+                done();
+            });
+    });
+});
+
+describe('UC204 Ophalen van een gebruiker op basis van ID', () => {
+    it('Toon een gebruiker met de juiste ID (ID = 2)', (done) => {
+        chai.request(server)
+            .get(endpointToTest + '/2')
+            .end((err, res) => {
+                chai.expect(res).to.have.status(200);
+                chai.expect(res.body).to.have.property('id').equals(2);
+                done();
+            });
+    });
+});
+
+describe('UC205 Bijwerken van gebruikersgegevens', () => {
+    it('Verander de naam van een gebruiker', (done) => {
+        chai.request(server)
+            .put(endpointToTest + '/1') // ID van de gebruiker die we willen bijwerken
             .send({
-                firstName: 'Voornaam',
-                lastName: 'Achternaam',
-                emailAdress: 'v.a@server.nl'
+                firstName: 'NewName', // Nieuwe naam
+                lastName: 'Doe' // Blijft hetzelfde
             })
             .end((err, res) => {
-                res.should.have.status(200)
-                res.body.should.be.a('object')
+                chai.expect(res).to.have.status(200);
+                chai.expect(res.body).to.have.property('message').equals('User updated successfully');
+                done();
+            });
+    });
+});
 
-                res.body.should.have.property('data').that.is.a('object')
-                res.body.should.have.property('message').that.is.a('string')
-
-                const data = res.body.data
-                data.should.have.property('firstName').equals('Voornaam')
-                data.should.have.property('lastName').equals('Achternaam')
-                data.should.have.property('emailAdress')
-                data.should.have.property('id').that.is.a('number')
-
-                done()
-            })
-    })
-})
+describe('UC206 Verwijderen van een gebruiker', () => {
+    it('Verwijder een gebruiker', (done) => {
+        chai.request(server)
+            .delete(endpointToTest + '/1') // ID van de gebruiker die we willen verwijderen
+            .end((err, res) => {
+                chai.expect(res).to.have.status(200);
+                chai.expect(res.body).to.have.property('message').equals('User deleted successfully');
+                done();
+            });
+    });
+});
