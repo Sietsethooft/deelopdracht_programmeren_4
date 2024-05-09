@@ -2,7 +2,7 @@ const express = require('express');
 const InMemoryDatabase = require('./src/dtb/inmem-db');
 const app = express();
 const db = new InMemoryDatabase();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
