@@ -67,7 +67,7 @@ exports.createUser = (req, res) => {
 exports.getAllUsers = (req, res) => {
     logFunctionCall('getUsers', []);
     const users = db.getAllUsers();
-    res.status(200).json(users);
+    res.status(200).json({user: users});
 };
 
 // Controllerfunctie voor het ophalen van een gebruiker op basis van ID (UC-204)
