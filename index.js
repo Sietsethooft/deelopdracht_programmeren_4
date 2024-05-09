@@ -2,6 +2,7 @@ const express = require('express');
 const InMemoryDatabase = require('./src/dtb/inmem-db');
 const app = express();
 const db = new InMemoryDatabase();
+const port = 3000;
 
 app.use(express.json());
 
@@ -157,6 +158,8 @@ app.delete('/api/user/:id', (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
+
+module.exports = app

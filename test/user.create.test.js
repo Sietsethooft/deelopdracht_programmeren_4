@@ -14,24 +14,24 @@ describe('UC201 Registreren als nieuwe user', () => {
         chai.request(server)
             .post(endpointToTest)
             .send({
-                firstName: 'John',
-                lastName: 'Doe',
-                emailAdress: 'j.doe@example.com',
-                password: 'StrongPass123'
+                firstName: "John",
+                lastName: "Doe",
+                emailAdress: "j.doe@example.com",
+                password: "StrongPass123"
             })
             .end((err, res) => {
-                chai.expect(res).to.have.status(200);
+                chai.expect(res).to.have.status(201);
                 
                 chai.request(server)
                     .post(endpointToTest)
                     .send({
-                        firstName: 'Jane',
-                        lastName: 'Doe',
-                        emailAdress: 'j.doe@example.com',
-                        password: 'SecurePass456'
+                        firstName: "Gane",
+                        lastName: "Doe",
+                        emailAdress: "g.doe@example.com",
+                        password: "SecurePass456"
                     })
                     .end((err, res) => {
-                        chai.expect(res).to.have.status(200);
+                        chai.expect(res).to.have.status(201);
                         done();
                     });
             });
@@ -67,8 +67,10 @@ describe('UC205 Bijwerken van gebruikersgegevens', () => {
         chai.request(server)
             .put(endpointToTest + '/1') // ID van de gebruiker die we willen bijwerken
             .send({
-                firstName: 'NewName', // Nieuwe naam
-                lastName: 'Doe' // Blijft hetzelfde
+                firstName: "Johnita", // nieuwe naam (John -> Johnita)
+                lastName: "Doe",
+                emailAdress: "j.doe@example.com",
+                password: "StrongPass123"
             })
             .end((err, res) => {
                 chai.expect(res).to.have.status(200);
