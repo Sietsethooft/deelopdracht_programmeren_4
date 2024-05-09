@@ -44,7 +44,7 @@ describe('UC202 Ophalen van alle gebruikers', () => {
             .get(endpointToTest)
             .end((err, res) => {
                 chai.expect(res).to.have.status(200);
-                chai.expect(res.body).to.be.an('array').that.has.lengthOf.at.least(2); // Minstens 2 gebruikers moeten aanwezig zijn
+                chai.expect(res.body).to.be.an('object').that.has.property('user').that.is.an('array').that.has.lengthOf.at.least(2); // Minstens 2 gebruikers moeten aanwezig zijn
                 done();
             });
     });
