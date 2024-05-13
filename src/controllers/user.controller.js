@@ -1,4 +1,4 @@
-const InMemoryDatabase = require('../src/dtb/inmem-db');
+const InMemoryDatabase = require('../dtb/inmem-db');
 const { isValidEmail, isValidPassword, isValidPhoneNumber } = require('../utils/validators');
 
 const db = new InMemoryDatabase();
