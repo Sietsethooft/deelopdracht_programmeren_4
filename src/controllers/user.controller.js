@@ -58,7 +58,7 @@ exports.createUser = (req, res, next) => {
                 street: req.body.street || "", // Voeg straatnaam toe, indien opgegeven, anders leeg laten
                 city: req.body.city || "", // Voeg stad toe, indien opgegeven, anders leeg laten    
                 phoneNumber: req.body.phoneNumber || "", // Voeg telefoonnummer toe, indien opgegeven, anders leeg laten
-                roles: req.body.roles || ["user"] // Voeg rollen toe, indien opgegeven, anders standaard op "user" zetten
+                roles: req.body.roles || ['guest'] // Voeg rollen toe, indien opgegeven, anders standaard op "user" zetten
             };
 
             connection.query('INSERT INTO user SET ?', newUser, (err, result) => {
