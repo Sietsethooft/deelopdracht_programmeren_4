@@ -21,7 +21,10 @@ describe('UC201 Registreren als nieuwe user', () => {
             })
             .end((err, res) => {
                 chai.expect(res).to.have.status(201);
-                
+                chai.expect(res.body).to.have.property('status').equals(201);
+                chai.expect(res.body).to.have.property('message').equals('User created successfully');
+                chai.expect(res.body).to.have.property('data').that.is.an('object');
+
                 chai.request(server)
                     .post(endpointToTest)
                     .send({
@@ -32,6 +35,9 @@ describe('UC201 Registreren als nieuwe user', () => {
                     })
                     .end((err, res) => {
                         chai.expect(res).to.have.status(201);
+                        chai.expect(res.body).to.have.property('status').equals(201);
+                        chai.expect(res.body).to.have.property('message').equals('User created successfully');
+                        chai.expect(res.body).to.have.property('data').that.is.an('object');
                         done();
                     });
             });
@@ -44,7 +50,9 @@ describe('UC202 Ophalen van alle gebruikers', () => {
             .get(endpointToTest)
             .end((err, res) => {
                 chai.expect(res).to.have.status(200);
-                chai.expect(res.body).to.be.an('array').that.has.lengthOf.at.least(2); // Minstens 2 gebruikers moeten aanwezig zijn
+                chai.expect(res.body).to.have.property('status').equals(200);
+                chai.expect(res.body).to.have.property('message').equals('Users retrieved successfully');
+                chai.expect(res.body).to.have.property('data').that.is.an('array').that.has.lengthOf.at.least(2); // Minstens 2 gebruikers moeten aanwezig zijn
                 done();
             });
     });
@@ -56,7 +64,9 @@ describe('UC204 Ophalen van een gebruiker op basis van ID', () => {
             .get(endpointToTest + '/2')
             .end((err, res) => {
                 chai.expect(res).to.have.status(200);
-                chai.expect(res.body).to.have.property('id').equals(2);
+                chai.expect(res.body).to.have.property('status').equals(200);
+                chai.expect(res.body).to.have.property('message').equals('User retrieved successfully');
+                chai.expect(res.body).to.have.property('data').that.is.an('object').and.have.property('id').equals(2);
                 done();
             });
     });
@@ -74,7 +84,9 @@ describe('UC205 Bijwerken van gebruikersgegevens', () => {
             })
             .end((err, res) => {
                 chai.expect(res).to.have.status(200);
+                chai.expect(res.body).to.have.property('status').equals(200);
                 chai.expect(res.body).to.have.property('message').equals('User updated successfully');
+                chai.expect(res.body).to.have.property('data').that.is.an('object');
                 done();
             });
     });
@@ -86,7 +98,9 @@ describe('UC206 Verwijderen van een gebruiker', () => {
             .delete(endpointToTest + '/1') // ID van de gebruiker die we willen verwijderen
             .end((err, res) => {
                 chai.expect(res).to.have.status(200);
+                chai.expect(res.body).to.have.property('status').equals(200);
                 chai.expect(res.body).to.have.property('message').equals('User deleted successfully');
+                chai.expect(res.body).to.have.property('data').that.is.an('object');
                 done();
             });
     });
