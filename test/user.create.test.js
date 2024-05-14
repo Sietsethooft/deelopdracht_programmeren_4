@@ -65,9 +65,9 @@ describe('UC205 Bijwerken van gebruikersgegevens', () => {
         chai.request(server)
             .put(endpointToTest + `/${newUserId}`) // ID van de nieuwe gebruiker (UC201) die we willen bijwerken
             .send({
-                firstName: "Johnita", // nieuwe naam (John -> Johnita)
-                lastName: "Doe",
-                emailAdress: "j.doe@example.com",
+                firstName: "Gertita", // nieuwe naam (Gert -> Gertita)
+                lastName: "Verhulst",
+                emailAdress: "g.verhulst@example.com",
                 password: "StrongPass123"
             })
             .end((err, res) => {
