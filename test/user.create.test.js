@@ -8,38 +8,26 @@ chai.use(chaiHttp)
 tracer.setLevel('warn')
 
 const endpointToTest = '/api/user';
+var newUserId;
 
 describe('UC201 Registreren als nieuwe user', () => {
-    it('Maak twee geldige gebruikers aan', (done) => {
+    it('Maak een geldige gebruiker aan', (done) => {
         chai.request(server)
             .post(endpointToTest)
             .send({
-                firstName: "John",
-                lastName: "Doe",
-                emailAdress: "j.doe@example.com",
+                firstName: "Gert",
+                lastName: "Verhulst",
+                emailAdress: "g.verhulst@example.com",
                 password: "StrongPass123"
             })
             .end((err, res) => {
+                if (err) return done(err); // Als er een fout is, roep done aan met de fout
+                newUserId = res.body.data.id; // ID van de net aangemaakte gebruiker verkrijgen
                 chai.expect(res).to.have.status(201);
                 chai.expect(res.body).to.have.property('status').equals(201);
                 chai.expect(res.body).to.have.property('message').equals('User created successfully');
                 chai.expect(res.body).to.have.property('data').that.is.an('object');
-
-                chai.request(server)
-                    .post(endpointToTest)
-                    .send({
-                        firstName: "Gane",
-                        lastName: "Doe",
-                        emailAdress: "g.doe@example.com",
-                        password: "SecurePass456"
-                    })
-                    .end((err, res) => {
-                        chai.expect(res).to.have.status(201);
-                        chai.expect(res.body).to.have.property('status').equals(201);
-                        chai.expect(res.body).to.have.property('message').equals('User created successfully');
-                        chai.expect(res.body).to.have.property('data').that.is.an('object');
-                        done();
-                    });
+                done(); // Roep done aan om aan te geven dat de test is voltooid
             });
     });
 });
@@ -59,14 +47,14 @@ describe('UC202 Ophalen van alle gebruikers', () => {
 });
 
 describe('UC204 Ophalen van een gebruiker op basis van ID', () => {
-    it('Toon een gebruiker met de juiste ID (ID = 2)', (done) => {
+    it('Toon de nieuwe gebruiker met de juiste ID', (done) => {
         chai.request(server)
-            .get(endpointToTest + '/2')
+            .get(endpointToTest + `/${newUserId}`) // ID van de nieuwe gebruiker (UC201) die we willen ophalen
             .end((err, res) => {
                 chai.expect(res).to.have.status(200);
                 chai.expect(res.body).to.have.property('status').equals(200);
                 chai.expect(res.body).to.have.property('message').equals('User retrieved successfully');
-                chai.expect(res.body).to.have.property('data').that.is.an('object').and.have.property('id').equals(2);
+                chai.expect(res.body).to.have.property('data').that.is.an('object').and.have.property('id').equals(newUserId); // ID moet overeenkomen met nieuwe gebruiker
                 done();
             });
     });
@@ -75,7 +63,7 @@ describe('UC204 Ophalen van een gebruiker op basis van ID', () => {
 describe('UC205 Bijwerken van gebruikersgegevens', () => {
     it('Verander de naam van een gebruiker', (done) => {
         chai.request(server)
-            .put(endpointToTest + '/1') // ID van de gebruiker die we willen bijwerken
+            .put(endpointToTest + `/${newUserId}`) // ID van de nieuwe gebruiker (UC201) die we willen bijwerken
             .send({
                 firstName: "Johnita", // nieuwe naam (John -> Johnita)
                 lastName: "Doe",
@@ -95,7 +83,7 @@ describe('UC205 Bijwerken van gebruikersgegevens', () => {
 describe('UC206 Verwijderen van een gebruiker', () => {
     it('Verwijder een gebruiker', (done) => {
         chai.request(server)
-            .delete(endpointToTest + '/1') // ID van de gebruiker die we willen verwijderen
+            .delete(endpointToTest + `/${newUserId}`) // ID van de nieuwe gebruiker (UC201) die we willen verwijderen
             .end((err, res) => {
                 chai.expect(res).to.have.status(200);
                 chai.expect(res.body).to.have.property('status').equals(200);
